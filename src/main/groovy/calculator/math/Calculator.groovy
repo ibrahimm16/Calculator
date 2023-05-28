@@ -1,4 +1,4 @@
-package calculator.gui.math
+package calculator.math
 
 import calculator.gui.Displayable
 import org.mariuszgromada.math.mxparser.Expression

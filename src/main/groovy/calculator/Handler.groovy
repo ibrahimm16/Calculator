@@ -3,7 +3,7 @@ package calculator
 import calculator.gui.Display
 import calculator.gui.Displayable
 import calculator.gui.InputHandler
-import calculator.gui.math.Calculator
+import calculator.math.Calculator
 
 import java.awt.*
 import java.util.List

@@ -1,7 +1,7 @@
 package calculator.gui
 
 import calculator.Handler
-import calculator.gui.math.Calculator
+import calculator.math.Calculator
 
 import java.awt.event.*
 
@@ -13,7 +13,7 @@ class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
         char key = Character.toLowerCase(e.getKeyChar())
 
         // use 'C' to close it
-        if (key == KeyEvent.VK_C) {
+        if (key == 'c' as char) {
             System.exit(0)
         }
 

@@ -14,17 +14,19 @@ class Handler {
 
     boolean running = true
     Calculator calculator
-    InputHandler inputMap
+    InputHandler inputHandler
     Display display
 
     List<Displayable> displayable = []
 
     Handler() {
         handler = this
+        inputHandler = new InputHandler()
         calculator = new Calculator()
-        inputMap = new InputHandler()
         display = new Display()
         displayable = [calculator]
+
+        inputHandler.calculator = calculator
     }
 
     void start() {
@@ -36,7 +38,7 @@ class Handler {
     }
 
     void update() {
-
+        calculator.update()
     }
 
     void render() {

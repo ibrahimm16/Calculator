@@ -8,10 +8,20 @@ import java.awt.Graphics2D
 
 class Calculator implements Displayable {
 
-    String expression = ''
-    String result = 0
+    String expression
+    String result
+    Graph graph
+    boolean shouldEval = false
 
-    void keyTyped(Character c) {
+    Calculator() {
+        expression = ''
+        result = 0
+        graph = new Graph()
+
+        displayables.add(graph)
+    }
+
+    void keyTyped(char c) {
         expression += c
     }
 
@@ -19,14 +29,27 @@ class Calculator implements Displayable {
         expression = expression.isEmpty() ? '' : expression.substring(0, expression.length() - 1)
     }
 
+    void update() {
+        if (shouldEval) {
+            evaluate()
+            shouldEval = false
+        }
+        graph.update()
+    }
+
     void evaluate() {
-        try {
-            result = new Expression(expression).calculate()
-            if (result.equalsIgnoreCase('NaN')) {
-                result = 'bad expression'
+        if (expression.contains('x')) {
+            graph.expression = expression
+            graph.shouldEval = true
+        } else {
+            try {
+                result = new Expression(expression).calculate()
+                if (result.equalsIgnoreCase('NaN')) {
+                    result = 'bad expression'
+                }
+            } catch (Exception e) {
+                result = "bad expression, ${e.getMessage()}"
             }
-        } catch (Exception e) {
-            result = "bad expression, ${e.getMessage()}"
         }
     }
 
@@ -34,5 +57,7 @@ class Calculator implements Displayable {
         g.setColor(Color.white)
         g.drawString(expression, 15, 30)
         g.drawString(result, 15, 50)
+
+        displayables.each { it.render(g) }
     }
 }

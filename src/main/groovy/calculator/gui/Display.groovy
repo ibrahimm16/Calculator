@@ -14,7 +14,7 @@ import java.awt.image.BufferStrategy
 
 class Display {
 
-    static final int WIDTH = 800, HEIGHT = 600
+    static final int WIDTH = 1200, HEIGHT = 800
 
     JFrame frame
     Canvas canvas
@@ -27,11 +27,11 @@ class Display {
         canvas = new Canvas()
         canvas.setSize(dimension)
         canvas.setFocusable(false)
-        canvas.addMouseListener(handler.inputMap)
-        canvas.addMouseMotionListener(handler.inputMap)
+        canvas.addMouseListener(handler.inputHandler)
+        canvas.addMouseMotionListener(handler.inputHandler)
 
         frame = new JFrame()
-        frame.addKeyListener(handler.inputMap)
+        frame.addKeyListener(handler.inputHandler)
         frame.setSize(dimension)
         frame.add(canvas)
         frame.setResizable(false)

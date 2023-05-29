@@ -1,27 +1,29 @@
 package calculator.gui
 
-import calculator.Handler
+
 import calculator.math.Calculator
 
 import java.awt.event.*
 
 class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
 
-    Calculator calculator = Handler.handler.calculator
+    Calculator calculator
+
+    int x = 0, y = 0
 
     void keyTyped(KeyEvent e) {
-        char key = Character.toLowerCase(e.getKeyChar())
+        Character key = Character.toLowerCase(e.getKeyChar())
 
         // use 'C' to close it
         if (key == 'c' as char) {
             System.exit(0)
         }
 
-        if (key == KeyEvent.VK_BACK_SPACE) {
+        if (key.charValue() == KeyEvent.VK_BACK_SPACE) {
             calculator.keyDeleted()
-        } else if (key == KeyEvent.VK_ENTER) {
+        } else if (key.charValue() == KeyEvent.VK_ENTER) {
             calculator.evaluate()
-        } else {
+        } else if (key != null) {
             calculator.keyTyped(key)
         }
     }
@@ -32,7 +34,10 @@ class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
 
     void mouseClicked(MouseEvent e) {}
 
-    void mouseMoved(MouseEvent e) {}
+    void mouseMoved(MouseEvent e) {
+        x = e.x
+        y = e.y
+    }
 
     void mousePressed(MouseEvent e) {}
 

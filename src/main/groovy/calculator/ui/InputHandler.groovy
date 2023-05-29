@@ -1,22 +1,40 @@
-package calculator.gui
-
+package calculator.ui
 
 import calculator.math.Calculator
+import calculator.math.Graph
 
 import java.awt.event.*
 
 class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
 
     Calculator calculator
-
+    Graph graph
     int x = 0, y = 0
 
     void keyTyped(KeyEvent e) {
         Character key = Character.toLowerCase(e.getKeyChar())
 
-        // use 'C' to close it
-        if (key == 'c' as char) {
+        // use '?' to close it
+        if (e.getKeyChar() == '?' as char) {
             System.exit(0)
+        }
+
+        if (key == 'w') {
+            Graph.yScale++
+            graph.shouldEval = true
+        } else if (key == 's') {
+            if (!Graph.yScale as double <= 1) {
+                Graph.yScale--
+                graph.shouldEval = true
+            }
+        } else if (key == 'a') {
+            if (!Graph.xScale as double <= 1) {
+                Graph.xScale--
+                graph.shouldEval = true
+            }
+        } else if (key == 'd') {
+            Graph.xScale++
+            graph.shouldEval = true
         }
 
         if (key.charValue() == KeyEvent.VK_BACK_SPACE) {
@@ -28,16 +46,16 @@ class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
         }
     }
 
+    void mouseMoved(MouseEvent e) {
+        x = e.x
+        y = e.y
+    }
+
     void keyPressed(KeyEvent e) {}
 
     void keyReleased(KeyEvent e) {}
 
     void mouseClicked(MouseEvent e) {}
-
-    void mouseMoved(MouseEvent e) {
-        x = e.x
-        y = e.y
-    }
 
     void mousePressed(MouseEvent e) {}
 

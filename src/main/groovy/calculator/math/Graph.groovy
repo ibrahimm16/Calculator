@@ -1,37 +1,44 @@
 package calculator.math
 
-import calculator.Handler
-import calculator.gui.Displayable
-import calculator.gui.InputHandler
+import calculator.ui.Element
+import calculator.ui.Images
+import calculator.ui.InputHandler
+import org.mariuszgromada.math.mxparser.Argument
 import org.mariuszgromada.math.mxparser.Expression
 
 import java.awt.*
 import java.awt.font.TextAttribute
-import java.math.RoundingMode
+import java.awt.image.BufferedImage
 
-class Graph implements Displayable {
+class Graph extends Element {
+
+    static Integer imageX = 505, imageY = 5
+    static final Integer WIDTH = 690, HEIGHT = 390
+    static final Integer MIDDLE_X = 850, MIDDLE_Y = 195
+    static BigDecimal xScale = 1.0, yScale = 1.0
 
     String expression = '5 * sin(x)'
-    Map<Integer, Point> points = [:]
-
-    int width = 690, height = 390
+    Map<Integer, GraphPoint> points = [:]
+    BufferedImage graphImg
+    GraphPoint hovered = new GraphPoint(x: 0, y: 0)
 
     Double xHover = 850
     Double yValue = 190
 
-    Color background = new Color(160, 160, 160)
-    Color gridColor = Color.black
-    Color resultColor = Color.red
-
     InputHandler inputHandler
+    Boolean shouldEval = false
 
-    boolean shouldEval = false
+
+    //graph ticks and scale
+    Integer xMin = -23, xMax = 23
+
 
     Graph() {
-        inputHandler = Handler.handler.inputHandler
+        inputHandler = handler.inputHandler
         evaluate()
     }
 
+    @Override
     void update() {
         if (shouldEval) {
             evaluate()
@@ -39,36 +46,15 @@ class Graph implements Displayable {
         }
     }
 
+    @Override
     void render(Graphics2D g) {
-        g.setColor(background)
-        g.fillRect(505, 5, 690, 390)
+        BufferedImage graphBackgound = Images.get('graph')
+        g.drawImage(graphBackgound, imageX, imageY, null)
+        g.drawImage(graphImg, imageX, imageY, null)
 
-        g.setColor(gridColor)
-        g.drawLine(505, 195, 1195, 195)
-        g.drawLine(850, 5, 850, 395)
-        for (int i = 0; i < 46; i++) {
-            int x = 505 + i * 15
-            g.drawLine(x, 190, x, 200)
-        }
-
-        for (int i = 0; i < 26; i++) {
-            int y = 15 + i * 15
-            g.drawLine(845, y, 855, y)
-        }
-
-        g.setColor(resultColor)
-        Collection pointsList = points.values()
-        g.drawRect(pointsList[0].x as int, pointsList[0].y as int, 1, 1)
-        for (int i = 1; i < pointsList.size(); i++) {
-            Point p1 = pointsList[i - 1]
-            Point p2 = pointsList[i]
-            g.drawLine(p1.x as int, p1.y as int, p2.x as int, p2.y as int)
-        }
-
-        Rectangle boundingBox = new Rectangle(505, 5, width, height)
+        Rectangle boundingBox = new Rectangle(505, 5, WIDTH, HEIGHT)
         if (boundingBox.contains(inputHandler.x, inputHandler.y)) {
-            xHover = inputHandler.x
-            yValue = points[xHover as int]?.y ?: 195
+            hovered = points[inputHandler.x as Integer] ?: new GraphPoint(x: 0, y: 0)
         }
 
         Map fontAttributes = [:]
@@ -76,24 +62,56 @@ class Graph implements Displayable {
         fontAttributes[TextAttribute.SIZE] = 16
         fontAttributes[TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR]
         g.setFont(new Font(fontAttributes))
+
         g.setColor(Color.black)
+        g.drawString("x: ${hovered.x.trunc(3)}", 510, 20)
+        g.drawString("y: ${hovered.y.trunc(3)}", 510, 40)
+        g.drawString("xScale: ${xScale}, yScale: ${yScale}", 510, 375)
 
-        double xCoord = ((xHover - 850) / 15.0)
-        double yCoord = ((yValue - 195) / -15.0)
-        g.drawString("x: ${xCoord}", 510, 20)
-        g.drawString("y: ${yCoord}", 510, 40)
 
+        g.setColor(Color.red)
+        g.fillRect(hovered.pixelX() - 2, hovered.pixelY() - 2, 4, 4)
     }
 
-    void evaluate() {
+    private void evaluate() {
         points.clear()
-        for (int i = -23; i < 23; i++) {
-            for (double x = i; x < i + 1; x += (1.0 / 15.0)) {
-                Expression e = new Expression(expression.replaceAll('x', x.toString()))
-                double xResult = (850.0 + (x * 15.0))
-                double yResult = (-1.0 * (e.calculate() * 15.0) + 195.0)
-                points[xResult as int] = new Point(xResult as int, yResult as int)
+        Argument xArg = new Argument('x')
+        Expression formula = new Expression(expression, xArg)
+        BigDecimal xInc = (xScale / 15.0 as BigDecimal) // scale divided by pixels between tick marks
+
+        for (BigDecimal xGraph = (xMin * xScale); xGraph < (xMax * xScale); xGraph += xScale) {
+            BigDecimal xNext = xGraph + xScale
+            for (BigDecimal xVal = xGraph; xVal < xNext; xVal += xInc) {
+                xArg.setArgumentValue(xVal)
+                BigDecimal yVal = formula.calculate()
+                GraphPoint point = new GraphPoint(x: xVal, y: yVal)
+
+                if (point.x && point.y) {
+                    points[point.pixelX()] = point
+                }
             }
         }
+
+        setGraphImage()
+    }
+
+    private void setGraphImage() {
+        BufferedImage img = new BufferedImage(1200, 800, BufferedImage.TYPE_INT_ARGB)
+        Graphics2D g = img.createGraphics()
+        g.setColor(Color.blue)
+
+        Collection graphPoints = points.values()
+        GraphPoint last = graphPoints[0]
+
+        (1..graphPoints.size() - 1).each { i ->
+            GraphPoint next = graphPoints[i]
+            Integer p1x = last.pixelX(), p1y = last.pixelY()
+            Integer p2x = next.pixelX(), p2y = next.pixelY()
+            g.drawLine(p1x, p1y, p2x, p2y)
+            last = next
+        }
+
+        graphImg = img.getSubimage(imageX, imageY, WIDTH, HEIGHT)
+        g.dispose()
     }
 }

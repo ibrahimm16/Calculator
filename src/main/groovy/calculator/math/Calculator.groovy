@@ -1,12 +1,12 @@
 package calculator.math
 
-import calculator.gui.Displayable
+
+import calculator.ui.Element
 import org.mariuszgromada.math.mxparser.Expression
 
-import java.awt.Color
-import java.awt.Graphics2D
+import java.awt.*
 
-class Calculator implements Displayable {
+class Calculator extends Element {
 
     String expression
     String result
@@ -18,7 +18,7 @@ class Calculator implements Displayable {
         result = 0
         graph = new Graph()
 
-        displayables.add(graph)
+        elements.add(graph)
     }
 
     void keyTyped(char c) {
@@ -58,6 +58,6 @@ class Calculator implements Displayable {
         g.drawString(expression, 15, 30)
         g.drawString(result, 15, 50)
 
-        displayables.each { it.render(g) }
+        elements.each { it.render(g) }
     }
 }

@@ -1,6 +1,6 @@
-package calculator.gui
+package calculator.ui
 
-import calculator.Handler
+import calculator.app.Handler
 
 import javax.swing.JFrame
 import java.awt.Canvas
@@ -73,7 +73,7 @@ class Display {
             fontAttributes[TextAttribute.SIZE] = 24
             fontAttributes[TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR]
 
-            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP)
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)
             g.setFont(new Font(fontAttributes))
             return g
         }

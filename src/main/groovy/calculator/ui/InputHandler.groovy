@@ -21,20 +21,23 @@ class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
 
         if (key == 'w') {
             Graph.yScale++
-            graph.shouldEval = true
+            graph.setGraphImage()
+            return
         } else if (key == 's') {
-            if (!Graph.yScale as double <= 1) {
+            if (!(Graph.yScale <= 1)) {
                 Graph.yScale--
-                graph.shouldEval = true
+                graph.setGraphImage()
             }
         } else if (key == 'a') {
-            if (!Graph.xScale as double <= 1) {
+            if (!(Graph.xScale <= 1)) {
                 Graph.xScale--
-                graph.shouldEval = true
+                graph.setGraphImage()
             }
+            return
         } else if (key == 'd') {
             Graph.xScale++
-            graph.shouldEval = true
+            graph.setGraphImage()
+            return
         }
 
         if (key.charValue() == KeyEvent.VK_BACK_SPACE) {

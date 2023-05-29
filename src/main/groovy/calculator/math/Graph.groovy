@@ -66,11 +66,11 @@ class Graph extends Element {
         g.setColor(Color.black)
         g.drawString("x: ${hovered.x.trunc(3)}", 510, 20)
         g.drawString("y: ${hovered.y.trunc(3)}", 510, 40)
-        g.drawString("xScale: ${xScale}, yScale: ${yScale}", 510, 375)
+        g.drawString("xScale: ${xScale}, yScale: ${yScale}", 510, 390)
 
 
         g.setColor(Color.red)
-        g.fillRect(hovered.pixelX() - 2, hovered.pixelY() - 2, 4, 4)
+        g.fillOval(hovered.pixelX() - 2, hovered.pixelY() - 2, 4, 4)
     }
 
     private void evaluate() {
@@ -95,7 +95,7 @@ class Graph extends Element {
         setGraphImage()
     }
 
-    private void setGraphImage() {
+    void setGraphImage() {
         BufferedImage img = new BufferedImage(1200, 800, BufferedImage.TYPE_INT_ARGB)
         Graphics2D g = img.createGraphics()
         g.setColor(Color.blue)

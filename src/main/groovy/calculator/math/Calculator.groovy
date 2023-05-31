@@ -5,13 +5,13 @@ import calculator.ui.Element
 import org.mariuszgromada.math.mxparser.Expression
 
 import java.awt.*
+import java.awt.event.KeyEvent
 
 class Calculator extends Element {
 
     String expression
     String result
     Graph graph
-    boolean shouldEval = false
 
     Calculator() {
         expression = ''
@@ -22,25 +22,22 @@ class Calculator extends Element {
     }
 
     void keyTyped(char c) {
-        expression += c
-    }
-
-    void keyDeleted() {
-        expression = expression.isEmpty() ? '' : expression.substring(0, expression.length() - 1)
+        if (c == KeyEvent.VK_BACK_SPACE) {
+            expression = expression.isEmpty() ? '' : expression.substring(0, expression.length() - 1)
+        } else if (c == KeyEvent.VK_ENTER) {
+            evaluate()
+        } else {
+            expression += c
+        }
     }
 
     void update() {
-        if (shouldEval) {
-            evaluate()
-            shouldEval = false
-        }
-        graph.update()
+        super.update()
     }
 
     void evaluate() {
         if (expression.contains('x')) {
             graph.expression = expression
-            graph.shouldEval = true
         } else {
             try {
                 result = new Expression(expression).calculate()

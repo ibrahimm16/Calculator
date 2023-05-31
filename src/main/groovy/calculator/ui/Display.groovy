@@ -21,7 +21,7 @@ class Display {
     Renderer renderer
 
     Display() {
-        Handler handler = Handler.handler
+        Handler handler = Handler.get()
 
         Dimension dimension = new Dimension(WIDTH, HEIGHT)
         canvas = new Canvas()

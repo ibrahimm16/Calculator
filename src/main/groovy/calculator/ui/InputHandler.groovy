@@ -19,34 +19,8 @@ class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
             System.exit(0)
         }
 
-        if (key == 'w') {
-            Graph.yScale++
-            graph.setGraphImage()
-            return
-        } else if (key == 's') {
-            if (!(Graph.yScale <= 1)) {
-                Graph.yScale--
-                graph.setGraphImage()
-            }
-        } else if (key == 'a') {
-            if (!(Graph.xScale <= 1)) {
-                Graph.xScale--
-                graph.setGraphImage()
-            }
-            return
-        } else if (key == 'd') {
-            Graph.xScale++
-            graph.setGraphImage()
-            return
-        }
-
-        if (key.charValue() == KeyEvent.VK_BACK_SPACE) {
-            calculator.keyDeleted()
-        } else if (key.charValue() == KeyEvent.VK_ENTER) {
-            calculator.evaluate()
-        } else if (key != null) {
-            calculator.keyTyped(key)
-        }
+        calculator.keyTyped(key)
+        graph.keyTyped(key)
     }
 
     void mouseMoved(MouseEvent e) {

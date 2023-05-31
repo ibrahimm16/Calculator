@@ -11,7 +11,8 @@ abstract class Images {
         try {
             BufferedImage graph = ImageIO.read(new File('src/main/resources/images/graph.png'))
             images['graph'] = graph
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     static BufferedImage get(String key) {

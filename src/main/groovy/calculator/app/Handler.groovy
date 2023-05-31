@@ -1,16 +1,20 @@
 package calculator.app
 
 import calculator.math.Calculator
-import calculator.ui.Element
 import calculator.ui.Display
+import calculator.ui.Element
 import calculator.ui.InputHandler
 
 import java.awt.*
 import java.util.List
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class Handler {
 
     private static Handler handler
+    static final ExecutorService singleThread = Executors.newSingleThreadExecutor()
+    static final ExecutorService executorService = Executors.newFixedThreadPool(2)
 
     boolean running = true
     Calculator calculator
@@ -41,7 +45,7 @@ class Handler {
         while (running) {
             update()
             render()
-            sleep(20)
+            sleep(5)
         }
     }
 

@@ -2,7 +2,8 @@ package calculator.ui
 
 import calculator.app.Handler
 
-import java.awt.Graphics2D
+import java.awt.*
+import java.util.List
 
 abstract class Element {
 
